@@ -7,7 +7,7 @@ import logger from 'morgan';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
-import indexRouter from './routes/index.js';
+import indexRouter from './route/index.js';
 import usersRouter from './routes/users.js';
 import authorRouter from './routes/author.js';
 
