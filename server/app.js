@@ -7,7 +7,7 @@ import logger from 'morgan';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
-import indexRouter from './route/index.js';
+import indexRouter from './routes/index.js';
 import usersRouter from './routes/users.js';
 import authorRouter from './routes/author.js';
 
@@ -25,7 +25,7 @@ app.use(logger('dev'));
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, '..', 'public')));
 
 app.use('/', indexRouter);
 app.use('/users', usersRouter);
