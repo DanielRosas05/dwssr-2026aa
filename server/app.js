@@ -7,9 +7,9 @@ import logger from 'morgan';
 import { fileURLToPath } from 'url';
 import { dirname } from 'path';
 
-import indexRouter from './routes/index.js';
-import usersRouter from './routes/users.js';
-import authorRouter from './routes/author.js';
+import indexRouter from '#routes/index.js';
+import usersRouter from '#routes/users.js';
+import authorRouter from '#routes/author.js';
 
 // 🔧 Solución para __dirname
 const __filename = fileURLToPath(import.meta.url);
