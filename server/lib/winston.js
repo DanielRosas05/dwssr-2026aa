@@ -1,22 +1,21 @@
 //Importar libreria winston
 import winston, { format } from "winston";
-import path from "path";
+import path from "node:path";
 import fs from "node:fs";
-// Importamos biblioteca de transporte de winston para enviar logs a MongoDB
+// Importamos biblioteca de transporte 
 import DailyRotateFile from "winston-daily-rotate-file";
-import { info } from "node:console";
 
 // Desestructuramos funciones format
 const { combine, timestamp, label, printf, colorize, prettyPrint } = format;
 
 //Creando los directorios
-const __rootDir = path.resolve(process.cwd());
+const __rootdir = path.resolve(process.cwd());
 
 // Creando la ruta del directorio de logs en la raiz del proyecto
-const logDir = path.join(__rootDir, "logs");
+const logsDir = path.join(__rootdir, "logs");
 // Rurina que crea la carpeta donde iran los logs si no existe
-if (!fs.existsSync(logDir)) {
-  fs.mkdirSync(logDir, { recursive: true });
+if (!fs.existsSync(logsDir)) {
+  fs.mkdirSync(logsDir, { recursive: true });
 }
 
 // Definiendo esquma de colores para cada nivel de log
@@ -40,15 +39,15 @@ const myConsoleFormat = combine(
   // Agregamos un timestamp a cada log
   timestamp({ format: "DD-MM-YYYY HH:mm:ss" }),
   // Agregamos un formato personalizado para la salida de consola
-  print(
+  printf(
     (info) =>
       `${info.level}: ${info.label}: ${info.timestamp}: ${info.message}`,
   ),
 );
 // Formato para los archivos de log
 const myFileFormat = combine(
- // Quitamos los colores para los archivos de log
-       format.uncolorize(),
+  // Quitamos los colores para los archivos de log
+  format.uncolorize(),
   // Agregamos fecha en formato ISO
   timestamp(),
   // Salida en formato JSON para los archivos de log
@@ -90,3 +89,37 @@ const options = {
     format: myFileFormat,
   },
 };
+
+// Creando el una instancia del Logger
+/*
+Usaremos un transpot diario (DailyRotateFile) para el log principal,
+esto facilita a retencion por fecha y la compresion de archivos.
+
+Para los demas logd mantenmos archivos separados.
+*/
+const logger = winston.createLogger({
+  transports: [
+    // Log principal con rotacion diaria
+    new DailyRotateFile(options.dailyRotateFile),
+    // Log legible para humanos
+    new winston.transports.File(options.readableFile),
+    // Log de errores
+    new winston.transports.File(options.errorFile),
+    // Log en consola
+    new winston.transports.Console(options.console),
+  ],
+  // Captura de excepciones
+  exceptionHandlers: [
+    new winston.transports.File({
+      filename: path.join(logsDir, "exceptions.log"),
+    }),
+  ],
+  rejectioHandlers: [
+    new winston.transports.File({
+      filename: path.join(logsDir, "rejection.log"),
+    }),
+  ],
+  exitOnError: false, // No salir en caso de error
+});
+//Finalmente exportamos el logger
+export default logger;

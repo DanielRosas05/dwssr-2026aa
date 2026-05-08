@@ -1,8 +1,4 @@
-body {
-    padding : 0;
-    font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
-}
+@import "tailwindcss";
+@source "../../server/view/**/*.hbs";
 
-h1 {
-    color: #00B7FF;
-}
+@plugin 'daisyui/index.js'

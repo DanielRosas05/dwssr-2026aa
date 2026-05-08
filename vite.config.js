@@ -1,41 +1,33 @@
-// Importo la duncion de configuracion de Vite
-import { defineConfig } from 'vite';
-// Importo un resolvedor de rutas
-import { resolve } from 'path';
-// Importando TAILWINDCSS
-import tailwindcss from 'tailwindcss';
+import { defineConfig } from "vite";
+import { resolve } from "node:path";
+import { fileURLToPath } from "node:url";
+import { dirname } from "node:path";
+//impoertando tailwind css
+import tailwindcss from "@tailwindcss/vite";
+
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = dirname(__filename);
+
 export default defineConfig({
-  root: 'src',
-  // plugins: [tailwindcss()]
-  plugins : [tailwindcss()],
+  //directorio raíz del proyecto
+  root: "src",
 
-  server: {
-    port: 5173,
-    open: true,
-  },
-
+  plugins: [tailwindcss()],
   build: {
-    outDir: '../dist',
-    emptyOutDir: true,
-
-    //CREar un manifest.json para que el servidor pueda encontrar los archivos generados
+    outDir: "./public/dist",
     manifest: true,
-
-    //Configurar Rollup para que el punto de entrada sea main.js
-    rolldownOptions: {
+    rollupOptions: {
       input: {
-        main: resolve(__dirname, 'src/main.js'),
+        main: resolve(__dirname, "src/main.js"),
       },
     },
   },
+  resolve: {
+    alias: {
+      "#components": resolve(__dirname, "src/components"),
+      "#pages": resolve(__dirname, "src/pages"),
+      "#assets": resolve(__dirname, "src/assets"),
+      "#utils": resolve(__dirname, "src/utils"),
+    },
+  },
 });
-
-
-
-
-
-
-
-
-
-
